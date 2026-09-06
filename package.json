@@ -1,20 +1,17 @@
 {
   "name": "winweb-xrun",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && node scripts/copy-coi.mjs",
+    "build": "vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "check": "npm run typecheck && npm run build",
     "upstream:sync": "node scripts/sync-upstreams.mjs",
     "engine:hle:upstream": "node scripts/build-bottleship.mjs",
     "engine:hle:bundle": "node scripts/build-hle-engine.mjs"
-  },
-  "dependencies": {
-    "coi-serviceworker": "^0.1.7"
   },
   "devDependencies": {
     "typescript": "^6.0.0",
