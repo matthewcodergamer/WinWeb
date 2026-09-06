@@ -1,0 +1,25 @@
+{
+  "note":"Engineering registry, not legal advice. Verify upstream license files at the pinned revision before distribution.",
+  "projects":[
+    {"name":"BottleShip","repo":"jenissimo/bottleship","license":"Apache-2.0","usage":"Primary HLE architecture and future engine integration"},
+    {"name":"v86","repo":"copy/v86 and jenissimo/v86 fork","license":"BSD-2-Clause","usage":"x86-to-Wasm JIT/CPU execution reference and BottleShip dependency"},
+    {"name":"BoxedWine","repo":"danoon2/Boxedwine","license":"GPL-2.0","usage":"Wine32 compatibility research/fallback candidate"},
+    {"name":"Boxedwine64","repo":"andrewnakas/Boxedwine64","license":"GPL-2.0","usage":"Experimental x64/Wine64 engine candidate"},
+    {"name":"Wine","repo":"wine-mirror/wine","license":"LGPL-2.1-or-later","usage":"Win32/Win64 compatibility reference/runtime"},
+    {"name":"FEX","repo":"FEX-Emu/FEX","license":"MIT","usage":"DBT architecture/reference"},
+    {"name":"Box64","repo":"ptitSeb/box64","license":"MIT","usage":"x64 translation/thunking reference"},
+    {"name":"Hangover","repo":"andreRH/hangover","license":"LGPL-2.1-or-later","usage":"API escape/thunking architecture reference"},
+    {"name":"Zydis","repo":"zyantific/zydis","license":"MIT","usage":"Future x86/x64 decoder candidate"},
+    {"name":"Binaryen","repo":"WebAssembly/binaryen","license":"Apache-2.0","usage":"Future Wasm IR/optimization research"},
+    {"name":"Dawn / Tint","repo":"google/dawn","license":"BSD-3-Clause","usage":"WebGPU and WGSL compiler reference"},
+    {"name":"wgpu / Naga","repo":"gfx-rs/wgpu","license":"MIT OR Apache-2.0","usage":"Shader IR/translation research"},
+    {"name":"DXVK","repo":"doitsujin/dxvk","license":"Zlib","usage":"D3D8-11 behavioral/reference implementation"},
+    {"name":"ZenFS","repo":"zen-fs/core","license":"MIT","usage":"OPFS/Emscripten filesystem adapter candidate"},
+    {"name":"innoextract","repo":"dscharrer/innoextract","license":"Zlib","usage":"Future installer fast path"},
+    {"name":"LIEF","repo":"lief-project/LIEF","license":"Apache-2.0","usage":"Future deep PE parser option"},
+    {"name":"websockify","repo":"novnc/websockify","license":"LGPL-3.0","usage":"Restricted WebSocket-to-TCP relay reference"},
+    {"name":"code-server","repo":"coder/code-server","license":"MIT","usage":"VS Code browser UX/reference"},
+    {"name":"OpenVSCode Server","repo":"gitpod-io/openvscode-server","license":"MIT","usage":"VS Code optimized adapter research"},
+    {"name":"coi-serviceworker","repo":"gzuidhof/coi-serviceworker","license":"MIT","usage":"Cross-origin isolation fallback on hosts without configurable COOP/COEP headers"}
+  ]
+}

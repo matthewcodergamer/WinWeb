@@ -1,0 +1,21 @@
+# WinWeb roadmap
+
+- [x] R0 — initialize repository and reuse-first architecture
+- [x] R1 — browser capability probe
+- [x] R2 — local bounded PE32/PE32+ inspector
+- [x] R3 — runtime router and common engine interface
+- [x] R4 — OPFS-backed local app import/container record
+- [x] R5 — iPhone-first shell and app library
+- [ ] R6 — build pinned BottleShip unchanged inside WinWeb CI
+- [ ] R7 — wire BottleShip/v86 HLE surface into `XRunRuntimeEngine`
+- [ ] R8 — first reproducible x86 Win32 EXE launch in WinWeb
+- [ ] R9 — input bridge + iPhone virtual trackpad/keyboard into guest
+- [ ] R10 — WebGPU D3D test through BottleShip path
+- [ ] R11 — AudioWorklet guest audio proof
+- [ ] R12 — Inno installer extraction fast path
+- [ ] R13 — Wine32 isolated fallback engine
+- [ ] R14 — Boxedwine64 Memory64-capable browser proof
+- [ ] R15 — Safari wasm32 x64 research/proof
+- [ ] R16 — Code-OSS optimized adapter
+- [ ] R17 — compatibility evidence database + automated smoke harness
+- [ ] R18 — profile before considering a custom XRun DBT

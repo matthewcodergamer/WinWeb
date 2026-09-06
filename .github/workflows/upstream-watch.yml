@@ -1,0 +1,43 @@
+name: Upstream Watch
+
+on:
+  schedule:
+    - cron: '17 8 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compare pinned upstream revisions
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo '# WinWeb upstream report' > upstream-report.md
+          echo >> upstream-report.md
+          node <<'NODE' >> upstream-report.md
+          const lock = require('./upstreams.lock.json');
+          for (const p of lock.projects) console.log(`- ${p.id}: pinned ${p.ref} (${p.role}, ${p.license})`);
+          NODE
+          echo >> upstream-report.md
+          echo 'Latest remote revisions:' >> upstream-report.md
+          for repo in \
+            'jenissimo/bottleship main' \
+            'andrewnakas/Boxedwine64 master' \
+            'copy/v86 master' \
+            'FEX-Emu/FEX main' \
+            'doitsujin/dxvk master' \
+            'gfx-rs/wgpu trunk' \
+            'google/dawn main'; do
+            set -- $repo
+            sha=$(git ls-remote "https://github.com/$1.git" "refs/heads/$2" | cut -f1)
+            echo "- $1 ($2): $sha" >> upstream-report.md
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: upstream-report
+          path: upstream-report.md
