@@ -1,88 +1,57 @@
 # WinWeb / XRun
 
-**WinWeb** is a browser-native Windows application runtime project. The goal is to let a user select a compatible Windows `.exe`, inspect it locally, choose the best execution engine, persist its app container, and eventually launch the application directly inside a mobile-first shell — without booting or exposing a Windows desktop.
+WinWeb is an experimental browser-native Windows application runtime focused on running compatible Windows applications directly inside a custom web interface, with iPhone Safari as the primary mobile target.
 
-The primary UX/performance target is **iPhone Safari**.
+## Current implementation
 
-## Current build: V0.1 foundation
+- Windows 11-inspired lightweight shell that renders before any emulator code loads.
+- iPhone-first responsive layout with full-size controls to avoid Safari form zoom and tiny desktop-scale text.
+- Local EXE/PE inspection with a bounded 64 KB first pass (up to 256 KB only when the PE header requires it).
+- Detects PE32/PE32+, x86, x64, ARM/ARM64, GUI/console, DLL, CLR/.NET, installer-name and VS Code signals.
+- Runtime router recommendations for BottleShip/v86 HLE, Wine32/Wine64 research paths, and optimized web adapters.
+- **Direct Run flow for compatible x86/32-bit applications:** after inspection, press **Run application**. WinWeb lazily enables the shared-memory runtime, restores the uploaded EXE after the one-time isolation reload when necessary, and launches the BottleShip worker in a fullscreen app canvas.
+- The x86 web engine is built with a **256 MB mobile memory profile** instead of BottleShip upstream's 1 GB default. This is a WinWeb-only build patch and does not modify the upstream submodule.
+- Home never initializes WebGPU, Wine, v86, OPFS runtime containers, or emulator WASM.
+- GitHub Pages builds and deploys the pinned BottleShip engine separately from the shell.
 
-This repository now contains a real working foundation rather than a compatibility mockup:
+## Important compatibility boundary
 
-- local PE32 / PE32+ inspection
-- x86 / x64 / ARM detection
-- bounded parsing so large EXEs are not blindly loaded into iPhone memory
-- imported DLL/runtime signal detection
-- .NET, Electron/VS Code, DirectX/OpenGL and audio hints
-- runtime router for BottleShip/v86 HLE, Wine32, experimental Wine64 and Code-OSS adapter paths
-- browser capability probe for WebAssembly, SIMD, threads, SharedArrayBuffer, WebGPU, OPFS, AudioWorklet and more
-- local app library with OPFS binary persistence when available
-- iPhone-first responsive UI
-- common `XRunRuntimeEngine` interface
-- pinned upstream registry and sync script
-- third-party/license registry
-- COOP/COEP development headers plus static-host cross-origin-isolation fallback
-- CI + GitHub Pages build workflow
+Direct execution is currently wired only for compatible **x86/32-bit** PE applications through the BottleShip/v86 HLE engine. x64/Wine64 and other runtime families remain experimental/incomplete and are not presented as working when they are not.
 
-**Important:** the foundation does **not** claim that guest Windows execution is integrated yet. Engine adapters deliberately remain unavailable until the pinned upstream engine is actually built, wired, and proven with a reproducible EXE launch.
+The project goal is not to claim that every EXE works. Compatibility must be demonstrated with real runtime proof.
 
 ## Architecture
 
-```text
-EXE / installer
-      ↓
-local PE inspector
-      ↓
-runtime router
-  ┌───┼───────────────┐
-  ↓   ↓               ↓
-HLE   Wine            optimized web adapter
-  ↓   ↓               ↓
-WebAssembly / WebGPU / WebAudio / Workers / OPFS
-      ↓
-Safari / Chromium / Firefox
-```
+See:
 
-Primary reuse targets include BottleShip + its v86 fork, BoxedWine/Boxedwine64, Wine, Hangover/FEX/Box64 architecture ideas, DXVK semantics, Naga/Tint, ZenFS, innoextract, LIEF and Code-OSS browser implementations. See [`docs/upstream-projects.md`](docs/upstream-projects.md).
+- `docs/architecture.md`
+- `docs/bottleship-integration.md`
+- `docs/upstream-projects.md`
+- `THIRD_PARTY_NOTICES.md`
+- `DEPENDENCY_LICENSES.json`
 
-## Run locally
+## Upstream baseline
+
+The pinned BottleShip revision is tracked as the `vendor/bottleship` Git submodule. The HLE proof workflow builds the upstream project and the isolated WinWeb worker bundle so runtime integration is based on a reproducible upstream baseline.
+
+## Development
 
 ```bash
 npm install
-npm run dev
+npm run typecheck
+npm run build
 ```
 
-For a production build:
+For the BottleShip engine build:
 
 ```bash
-npm run check
+git submodule update --init --recursive
+cd vendor/bottleship && bun install --frozen-lockfile && cd ../..
+npm run engine:hle:bundle
 ```
 
-## Sync upstream engine source
+## Product statement
 
-The permissive default upstream set can be fetched with:
+> Run compatible Windows applications directly in your browser. No Windows installation and no remote PC required.
 
-```bash
-npm run upstream:sync
-```
-
-GPL-family research engines are intentionally not cloned by default:
-
-```bash
-XRUN_INCLUDE_GPL=1 npm run upstream:sync
-```
-
-Review `DEPENDENCY_LICENSES.json` and each upstream license before distributing combined builds.
-
-## Next engineering milestone
-
-The next milestone is deliberately narrow:
-
-1. fetch the pinned BottleShip revision,
-2. reproduce its current build unchanged,
-3. wire the guest display/input/runtime into the `BottleShipEngine` adapter,
-4. launch one known x86 Win32 executable inside WinWeb,
-5. record the runtime trace as a regression fixture.
-
-Only then should WinWeb label the HLE engine as integrated.
-
-See [`ROADMAP.md`](ROADMAP.md) and [`docs/architecture.md`](docs/architecture.md).
+WinWeb is an independent project and is not affiliated with or endorsed by Microsoft. Windows and related marks belong to Microsoft.
