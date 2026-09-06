@@ -9,22 +9,22 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="WinWeb" />
   <meta name="description" content="Open and inspect compatible Windows applications locally in your browser." />
-  <link rel="manifest" href="./manifest.webmanifest?v=20260906-shell3" />
-  <link rel="icon" href="./windows11-logo.svg?v=20260906-shell3" type="image/svg+xml" />
-  <link rel="icon" href="./favicon-64.png?v=20260906-shell3" sizes="64x64" type="image/png" />
-  <link rel="apple-touch-icon" href="./apple-touch-icon.png?v=20260906-shell3" sizes="180x180" />
-  <link rel="stylesheet" href="./winweb-shell.css?v=20260906-shell3" />
+  <link rel="manifest" href="./manifest.webmanifest?v=20260906-shell4" />
+  <link rel="icon" href="./windows11-logo.svg?v=20260906-shell4" type="image/svg+xml" />
+  <link rel="icon" href="./favicon-64.png?v=20260906-shell4" sizes="64x64" type="image/png" />
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png?v=20260906-shell4" sizes="180x180" />
+  <link rel="stylesheet" href="./winweb-shell.css?v=20260906-shell4" />
   <title>WinWeb — Windows apps in your browser</title>
 </head>
 <body>
   <div id="app" class="ww-shell" data-page="home">
     <header class="ww-topbar">
       <button class="ww-brand" type="button" data-page-link="home" aria-label="WinWeb Home">
-        <img src="./windows11-logo.svg" class="ww-windows-mark" alt="" />
+        <img src="./windows11-logo.svg?v=20260906-shell4" class="ww-windows-mark" alt="" />
         <span><strong>WinWeb</strong><small>Windows app runtime</small></span>
       </button>
       <div class="ww-top-search" role="search">
-        <img src="./fluent/search.svg" alt="" />
+        <img src="./fluent/search.svg?v=20260906-shell4" alt="" />
         <span>Search apps and settings</span>
       </div>
       <span class="ww-local-status"><i></i> Local</span>
@@ -32,11 +32,11 @@
 
     <div class="ww-layout">
       <aside class="ww-sidebar" aria-label="Main navigation">
-        <button class="ww-side-item active" type="button" data-page-link="home"><img src="./fluent/home.svg" alt="" /><span>Home</span></button>
-        <button class="ww-side-item" type="button" data-page-link="apps"><img src="./fluent/apps.svg" alt="" /><span>Apps</span></button>
-        <button class="ww-side-item" type="button" data-pick><img src="./fluent/folder-open.svg" alt="" /><span>Open EXE</span></button>
+        <button class="ww-side-item active" type="button" data-page-link="home"><img src="./fluent/home.svg?v=20260906-shell4" alt="" /><span>Home</span></button>
+        <button class="ww-side-item" type="button" data-page-link="apps"><img src="./fluent/apps.svg?v=20260906-shell4" alt="" /><span>Apps</span></button>
+        <button class="ww-side-item" type="button" data-pick><img src="./fluent/folder-open.svg?v=20260906-shell4" alt="" /><span>Open EXE</span></button>
         <div class="ww-side-spacer"></div>
-        <button class="ww-side-item" type="button" data-page-link="settings"><img src="./fluent/settings.svg" alt="" /><span>Settings</span></button>
+        <button class="ww-side-item" type="button" data-page-link="settings"><img src="./fluent/settings.svg?v=20260906-shell4" alt="" /><span>Settings</span></button>
       </aside>
 
       <main id="ww-main" class="ww-main">
@@ -52,7 +52,7 @@
 
           <section class="ww-open-panel">
             <button class="ww-file-picker" type="button" data-pick>
-              <span class="ww-file-icon"><img src="./fluent/folder-open.svg" alt="" /></span>
+              <span class="ww-file-icon"><img src="./fluent/folder-open.svg?v=20260906-shell4" alt="" /></span>
               <span class="ww-file-copy"><strong>Select a Windows executable</strong><small>Browse Files · .exe, .com or .scr</small></span>
               <span class="ww-browse-button">Browse</span>
             </button>
@@ -69,14 +69,14 @@
           <section class="ww-quick-section">
             <div class="ww-section-title"><div><span>Pinned</span><h2>Quick actions</h2></div></div>
             <div class="ww-quick-grid">
-              <button type="button" data-pick><span class="ww-quick-icon blue"><img src="./fluent/folder-open.svg" alt="" /></span><span><strong>Import EXE</strong><small>Inspect a Windows app</small></span></button>
-              <button type="button" data-page-link="apps"><span class="ww-quick-icon green"><img src="./fluent/apps.svg" alt="" /></span><span><strong>My apps</strong><small>Saved app metadata</small></span></button>
-              <button type="button" data-page-link="settings"><span class="ww-quick-icon purple"><img src="./fluent/settings.svg" alt="" /></span><span><strong>Runtime</strong><small>Memory and engine options</small></span></button>
+              <button type="button" data-pick><span class="ww-quick-icon blue"><img src="./fluent/folder-open.svg?v=20260906-shell4" alt="" /></span><span><strong>Import EXE</strong><small>Inspect a Windows app</small></span></button>
+              <button type="button" data-page-link="apps"><span class="ww-quick-icon green"><img src="./fluent/apps.svg?v=20260906-shell4" alt="" /></span><span><strong>My apps</strong><small>Saved app metadata</small></span></button>
+              <button type="button" data-page-link="settings"><span class="ww-quick-icon purple"><img src="./fluent/settings.svg?v=20260906-shell4" alt="" /></span><span><strong>Runtime</strong><small>Memory and engine options</small></span></button>
             </div>
           </section>
 
           <section class="ww-mobile-status">
-            <img src="./windows11-logo.svg" alt="" />
+            <img src="./windows11-logo.svg?v=20260906-shell4" alt="" />
             <div><strong>iPhone smart-memory mode</strong><small>No WebGPU, Wine image or emulator WASM is loaded on Home.</small></div>
           </section>
         </section>
@@ -84,17 +84,17 @@
     </div>
 
     <nav class="ww-taskbar" aria-label="Mobile navigation">
-      <button type="button" data-page-link="home" class="active"><img src="./windows11-logo.svg" alt="Home" /></button>
-      <button type="button" data-pick><img src="./fluent/folder-open.svg" alt="Open EXE" /></button>
-      <button type="button" data-page-link="apps"><img src="./fluent/apps.svg" alt="Apps" /></button>
-      <button type="button" data-page-link="settings"><img src="./fluent/settings.svg" alt="Settings" /></button>
+      <button type="button" data-page-link="home" class="active"><img src="./windows11-logo.svg?v=20260906-shell4" alt="Home" /></button>
+      <button type="button" data-pick><img src="./fluent/folder-open.svg?v=20260906-shell4" alt="Open EXE" /></button>
+      <button type="button" data-page-link="apps"><img src="./fluent/apps.svg?v=20260906-shell4" alt="Apps" /></button>
+      <button type="button" data-page-link="settings"><img src="./fluent/settings.svg?v=20260906-shell4" alt="Settings" /></button>
     </nav>
 
-    <input id="ww-file" type="file" accept=".exe,.com,.scr" hidden />
+    <input id="ww-file" type="file" accept=".exe,.com,.scr,application/x-msdownload,application/vnd.microsoft.portable-executable,application/octet-stream" hidden />
     <div id="ww-sheet" class="ww-sheet" hidden></div>
   </div>
 
   <noscript><div class="ww-noscript">WinWeb needs JavaScript to inspect Windows executables.</div></noscript>
-  <script defer src="./winweb-shell.js?v=20260906-shell3"></script>
+  <script defer src="./winweb-shell.js?v=20260906-shell4"></script>
 </body>
 </html>
