@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#f3f6fb" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#20242c" media="(prefers-color-scheme: dark)" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -13,42 +13,21 @@
     <link rel="icon" href="./favicon-64.png" sizes="64x64" type="image/png" />
     <link rel="icon" href="./icon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="./apple-touch-icon.png" sizes="180x180" />
+    <link rel="stylesheet" href="./winweb-shell.css?v=20260906-iphone2" />
     <title>WinWeb — Open Windows apps in your browser</title>
     <style>
-      #winweb-first-paint{min-height:100vh;display:grid;place-items:center;background:linear-gradient(145deg,#eaf4ff,#f6f4ff);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#1f1f1f}
-      #winweb-first-paint>div{display:grid;justify-items:center;gap:10px;text-align:center;padding:28px}
-      #winweb-first-paint .ww-logo{width:52px;height:52px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:3px;padding:10px;border-radius:13px;background:linear-gradient(135deg,#0078d4,#5b5fc7);box-shadow:0 12px 28px rgba(0,103,192,.2)}
-      #winweb-first-paint .ww-logo i{background:#fff;border-radius:2px}
-      #winweb-first-paint strong{font-size:18px;font-weight:650}
-      #winweb-first-paint small{color:#666}
-      @media(prefers-color-scheme:dark){#winweb-first-paint{background:linear-gradient(145deg,#181c23,#252937);color:#f5f5f5}#winweb-first-paint small{color:#aaa}}
+      html,body{margin:0;min-height:100%;background:#eef2f8;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+      #ww-static{min-height:100vh;min-height:100svh;display:grid;place-items:center;color:#1f1f1f}
+      #ww-static>div{display:grid;justify-items:center;gap:9px;text-align:center}
+      #ww-static .logo{width:48px;height:48px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:3px;padding:9px;border-radius:12px;background:linear-gradient(135deg,#0078d4,#5b5fc7)}
+      #ww-static .logo i{background:white;border-radius:2px}
+      #ww-static small{color:#666}
+      @media(prefers-color-scheme:dark){html,body{background:#20232a}#ww-static{color:#f4f4f4}#ww-static small{color:#aaa}}
     </style>
   </head>
   <body>
-    <div id="app">
-      <div id="winweb-first-paint" role="status" aria-live="polite">
-        <div>
-          <span class="ww-logo" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-          <strong>WinWeb</strong>
-          <small>Opening Windows runtime…</small>
-        </div>
-      </div>
-    </div>
-    <script>
-      (() => {
-        const showBootError = (message) => {
-          const app = document.getElementById('app');
-          if (!app || app.dataset.winwebReady === 'true') return;
-          app.innerHTML = '<div style="min-height:100vh;display:grid;place-items:center;background:#f3f6fb;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif;color:#1f1f1f;padding:24px"><div style="width:min(520px,100%);padding:24px;border:1px solid rgba(0,0,0,.08);border-radius:16px;background:rgba(255,255,255,.9);box-shadow:0 18px 60px rgba(40,75,115,.14)"><strong style="font-size:20px">WinWeb could not finish loading</strong><p style="color:#666;line-height:1.5">'+String(message || 'A browser runtime error stopped startup.')+'</p><button onclick="location.reload()" style="border:0;border-radius:8px;background:#0067c0;color:white;padding:10px 16px;font:inherit">Reload WinWeb</button></div></div>';
-        };
-        window.addEventListener('error', (event) => showBootError(event.message));
-        window.addEventListener('unhandledrejection', (event) => showBootError(event.reason?.message || event.reason));
-        setTimeout(() => {
-          const app = document.getElementById('app');
-          if (app && app.dataset.winwebReady !== 'true') showBootError('Startup timed out. Reload the page to retry.');
-        }, 12000);
-      })();
-    </script>
-    <script type="module" src="/src/main.ts"></script>
+    <div id="app"><div id="ww-static"><div><span class="logo"><i></i><i></i><i></i><i></i></span><strong>WinWeb</strong><small>Opening app shell…</small></div></div></div>
+    <noscript>WinWeb needs JavaScript to inspect Windows executables.</noscript>
+    <script defer src="./winweb-shell.js?v=20260906-iphone2"></script>
   </body>
 </html>
