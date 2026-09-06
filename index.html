@@ -9,32 +9,32 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="WinWeb" />
   <meta name="description" content="Inspect and run compatible Windows applications locally in your browser." />
-  <link rel="manifest" href="./manifest.webmanifest?v=20260906-shell6" />
-  <link rel="icon" href="./windows11-logo.svg?v=20260906-shell6" type="image/svg+xml" />
-  <link rel="icon" href="./favicon-64.png?v=20260906-shell6" sizes="64x64" type="image/png" />
-  <link rel="apple-touch-icon" href="./apple-touch-icon.png?v=20260906-shell6" sizes="180x180" />
-  <link rel="stylesheet" href="./winweb-shell.css?v=20260906-shell6" />
-  <link rel="stylesheet" href="./winweb-v6.css?v=20260906-shell6" />
+  <link rel="manifest" href="./manifest.webmanifest?v=20260906-shell7" />
+  <link rel="icon" href="./windows11-logo.svg?v=20260906-shell7" type="image/svg+xml" />
+  <link rel="icon" href="./favicon-64.png?v=20260906-shell7" sizes="64x64" type="image/png" />
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png?v=20260906-shell7" sizes="180x180" />
+  <link rel="stylesheet" href="./winweb-shell.css?v=20260906-shell7" />
+  <link rel="stylesheet" href="./winweb-v7.css?v=20260906-shell7" />
   <title>WinWeb — Windows apps in your browser</title>
 </head>
 <body>
   <div id="app" class="ww-shell" data-page="home">
     <header class="ww-topbar">
       <button class="ww-brand" type="button" data-page-link="home" aria-label="WinWeb Home">
-        <img src="./windows11-logo.svg?v=20260906-shell6" class="ww-windows-mark" alt="" />
+        <img src="./windows11-logo.svg?v=20260906-shell7" class="ww-windows-mark" alt="" />
         <span><strong>WinWeb</strong><small>Windows app runtime</small></span>
       </button>
-      <div class="ww-top-search" role="search"><img src="./fluent/search.svg?v=20260906-shell6" alt="" /><span>Search apps and settings</span></div>
+      <div class="ww-top-search" role="search"><img src="./fluent/search.svg?v=20260906-shell7" alt="" /><span>Search apps and settings</span></div>
       <span class="ww-local-status"><i></i> Local</span>
     </header>
 
     <div class="ww-layout">
       <aside class="ww-sidebar" aria-label="Main navigation">
-        <button class="ww-side-item active" type="button" data-page-link="home"><img src="./fluent/home.svg?v=20260906-shell6" alt="" /><span>Home</span></button>
-        <button class="ww-side-item" type="button" data-page-link="apps"><img src="./fluent/apps.svg?v=20260906-shell6" alt="" /><span>Apps</span></button>
-        <button class="ww-side-item" type="button" data-pick><img src="./fluent/folder-open.svg?v=20260906-shell6" alt="" /><span>Open EXE</span></button>
+        <button class="ww-side-item active" type="button" data-page-link="home"><img src="./fluent/home.svg?v=20260906-shell7" alt="" /><span>Home</span></button>
+        <button class="ww-side-item" type="button" data-page-link="apps"><img src="./fluent/apps.svg?v=20260906-shell7" alt="" /><span>Apps</span></button>
+        <button class="ww-side-item" type="button" data-pick><img src="./fluent/folder-open.svg?v=20260906-shell7" alt="" /><span>Open EXE</span></button>
         <div class="ww-side-spacer"></div>
-        <button class="ww-side-item" type="button" data-page-link="settings"><img src="./fluent/settings.svg?v=20260906-shell6" alt="" /><span>Settings</span></button>
+        <button class="ww-side-item" type="button" data-page-link="settings"><img src="./fluent/settings.svg?v=20260906-shell7" alt="" /><span>Settings</span></button>
       </aside>
 
       <main id="ww-main" class="ww-main">
@@ -43,14 +43,14 @@
             <div>
               <span class="ww-eyebrow">Home</span>
               <h1 id="ww-home-title">Open a Windows app</h1>
-              <p>Choose an EXE, inspect it locally, then press Run application. WinWeb loads the Windows engine only when you ask for it.</p>
+              <p>Select an EXE, inspect it locally, then run it. WinWeb keeps the Windows engine out of memory until you press Run.</p>
             </div>
             <span class="ww-ready-pill"><i></i>Ready</span>
           </div>
 
           <section class="ww-open-panel">
             <button class="ww-file-picker" type="button" data-pick>
-              <span class="ww-file-icon"><img src="./fluent/folder-open.svg?v=20260906-shell6" alt="" /></span>
+              <span class="ww-file-icon"><img src="./fluent/folder-open.svg?v=20260906-shell7" alt="" /></span>
               <span class="ww-file-copy"><strong>Select a Windows executable</strong><small>Browse Files · .exe, .com or .scr</small></span>
               <span class="ww-browse-button">Browse Files</span>
             </button>
@@ -66,25 +66,26 @@
           <section class="ww-quick-section">
             <div class="ww-section-title"><div><span>Pinned</span><h2>Quick actions</h2></div></div>
             <div class="ww-quick-grid">
-              <button type="button" data-pick><span class="ww-quick-icon blue"><img src="./fluent/folder-open.svg?v=20260906-shell6" alt="" /></span><span><strong>Import EXE</strong><small>Inspect and run an app</small></span></button>
-              <button type="button" data-page-link="apps"><span class="ww-quick-icon green"><img src="./fluent/apps.svg?v=20260906-shell6" alt="" /></span><span><strong>My apps</strong><small>Saved app metadata</small></span></button>
-              <button type="button" data-page-link="settings"><span class="ww-quick-icon purple"><img src="./fluent/settings.svg?v=20260906-shell6" alt="" /></span><span><strong>Runtime</strong><small>Memory and engine options</small></span></button>
+              <button type="button" data-pick><span class="ww-quick-icon blue"><img src="./fluent/folder-open.svg?v=20260906-shell7" alt="" /></span><span><strong>Import EXE</strong><small>Inspect and run an app</small></span></button>
+              <button type="button" data-page-link="apps"><span class="ww-quick-icon green"><img src="./fluent/apps.svg?v=20260906-shell7" alt="" /></span><span><strong>My apps</strong><small>Saved applications</small></span></button>
+              <button type="button" data-page-link="settings"><span class="ww-quick-icon purple"><img src="./fluent/settings.svg?v=20260906-shell7" alt="" /></span><span><strong>Runtime</strong><small>Engine and diagnostics</small></span></button>
             </div>
           </section>
 
           <section class="ww-mobile-status">
-            <img src="./windows11-logo.svg?v=20260906-shell6" alt="" />
-            <div><strong>iPhone smart-memory mode</strong><small>Home stays lightweight. Runtime diagnostics appear automatically if an engine stalls.</small></div>
+            <span class="ww-mobile-status-icon"><img src="./windows11-logo.svg?v=20260906-shell7" alt="" /></span>
+            <div><strong>iPhone smart-memory mode</strong><small>256 MB mobile profile. Live diagnostics open automatically if startup stalls.</small></div>
+            <span class="ww-mobile-status-state">ON</span>
           </section>
         </section>
       </main>
     </div>
 
     <nav class="ww-taskbar" aria-label="Mobile navigation">
-      <button type="button" data-page-link="home" class="active"><img src="./windows11-logo.svg?v=20260906-shell6" alt="Home" /></button>
-      <button type="button" data-pick><img src="./fluent/folder-open.svg?v=20260906-shell6" alt="Open EXE" /></button>
-      <button type="button" data-page-link="apps"><img src="./fluent/apps.svg?v=20260906-shell6" alt="Apps" /></button>
-      <button type="button" data-page-link="settings"><img src="./fluent/settings.svg?v=20260906-shell6" alt="Settings" /></button>
+      <button type="button" data-page-link="home" class="active" aria-label="Home"><img src="./windows11-logo.svg?v=20260906-shell7" alt="" /></button>
+      <button type="button" data-pick aria-label="Open EXE"><img src="./fluent/folder-open.svg?v=20260906-shell7" alt="" /></button>
+      <button type="button" data-page-link="apps" aria-label="Apps"><img src="./fluent/apps.svg?v=20260906-shell7" alt="" /></button>
+      <button type="button" data-page-link="settings" aria-label="Settings"><img src="./fluent/settings.svg?v=20260906-shell7" alt="" /></button>
     </nav>
 
     <input id="ww-file" type="file" accept=".exe,.com,.scr,application/x-msdownload,application/vnd.microsoft.portable-executable,application/octet-stream" hidden />
@@ -92,6 +93,6 @@
   </div>
 
   <noscript><div class="ww-noscript">WinWeb needs JavaScript to inspect and run Windows executables.</div></noscript>
-  <script defer src="./winweb-shell.js?v=20260906-shell6"></script>
+  <script defer src="./winweb-shell.js?v=20260906-shell7"></script>
 </body>
 </html>

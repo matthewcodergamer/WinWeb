@@ -5,14 +5,24 @@ import { fileURLToPath } from 'node:url';
 const root = path.dirname(fileURLToPath(import.meta.url));
 const bs = path.resolve(root, 'vendor/bottleship');
 
-const assetReplacements = new Map([
-  ['"/v86.wasm"', '"./runtime/v86.wasm"'],
-  ['"/bios/seabios.bin"', '"./runtime/bios/seabios.bin"'],
-  ['"/bios/vgabios.bin"', '"./runtime/bios/vgabios.bin"'],
-  ['"/unpack-streaming.wasm"', '"./runtime/unpack-streaming.wasm"'],
-  ['"/unpack-buffered.wasm"', '"./runtime/unpack-buffered.wasm"'],
-  ['"/video-decoder.wasm"', '"./runtime/video-decoder.wasm"']
-]);
+const runtimeAssetMap = [
+  ['/v86.wasm', './runtime/v86.wasm'],
+  ['/bios/seabios.bin', './runtime/bios/seabios.bin'],
+  ['/bios/vgabios.bin', './runtime/bios/vgabios.bin'],
+  ['/unpack-streaming.wasm', './runtime/unpack-streaming.wasm'],
+  ['/unpack-buffered.wasm', './runtime/unpack-buffered.wasm'],
+  ['/video-decoder.wasm', './runtime/video-decoder.wasm']
+];
+
+function rewriteBuiltRuntimeUrls(code) {
+  let next = code;
+  for (const [from, to] of runtimeAssetMap) {
+    next = next.split(`"${from}"`).join(`"${to}"`);
+    next = next.split(`'${from}'`).join(`'${to}'`);
+    next = next.split('`' + from + '`').join('`' + to + '`');
+  }
+  return next;
+}
 
 function winWebBottleShipPatch() {
   return {
@@ -21,17 +31,17 @@ function winWebBottleShipPatch() {
     transform(code, id) {
       if (!id.includes('/vendor/bottleship/')) return null;
       let next = code;
-      for (const [from, to] of assetReplacements) next = next.split(from).join(to);
-
-      // BottleShip upstream defaults to 1 GB guest RAM. That is too aggressive for
-      // an iPhone 11 Safari tab. WinWeb's web engine starts at a 256 MB profile.
-      // This is intentionally isolated to the WinWeb bundle and does not modify upstream.
       if (id.endsWith('/src/worker/core/cpu/emulator-config.ts')) {
         next = next.replace(
           /export const EMU_MEMORY_SIZE\s*=\s*1024\s*\*\s*1024\s*\*\s*1024\s*;/,
           'export const EMU_MEMORY_SIZE = 256 * 1024 * 1024;'
         );
       }
+      return next === code ? null : { code: next, map: null };
+    },
+    renderChunk(code, chunk) {
+      if (!chunk.fileName.endsWith('.js')) return null;
+      const next = rewriteBuiltRuntimeUrls(code);
       return next === code ? null : { code: next, map: null };
     }
   };
@@ -49,12 +59,11 @@ export default defineConfig({
     }
   },
   worker: {
-    format: 'es',
+    format: 'iife',
     rollupOptions: {
       output: {
-        codeSplitting: false,
-        entryFileNames: 'emulator-worker.js',
-        chunkFileNames: 'worker-[name]-[hash].js',
+        entryFileNames: (chunk) => chunk.facadeModuleId?.endsWith('/src/worker/emulator.worker.ts') ? 'emulator-worker.js' : 'worker-[name]-[hash].js',
+        chunkFileNames: 'worker-chunk-[name]-[hash].js',
         assetFileNames: 'worker-[name]-[hash][extname]'
       }
     }

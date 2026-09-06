@@ -34,14 +34,15 @@ jobs:
         working-directory: vendor/bottleship
       - name: Build WinWeb shell
         run: npm run build
-      - name: Build lazy BottleShip x86 engine
+      - name: Build and verify lazy BottleShip x86 engine
         run: npm run engine:hle:bundle
-      - name: Verify runtime files
+      - name: Verify deployable runtime files
         run: |
           test -f dist/engines/bottleship/engine-loader.js
           test -f dist/engines/bottleship/runtime/v86.wasm
           test -f dist/engines/bottleship/runtime/bios/seabios.bin
           test -f dist/engines/bottleship/runtime/bios/vgabios.bin
+          test -f dist/engines/bottleship/emulator-worker.js
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
