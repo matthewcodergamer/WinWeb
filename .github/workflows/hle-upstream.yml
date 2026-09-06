@@ -6,7 +6,11 @@ on:
     paths:
       - '.gitmodules'
       - 'vendor/bottleship'
+      - 'engines/bottleship/**'
+      - 'vite.bottleship-engine.config.mjs'
       - 'scripts/build-bottleship.mjs'
+      - 'scripts/build-hle-engine.mjs'
+      - 'scripts/copy-bottleship-runtime-assets.mjs'
       - '.github/workflows/hle-upstream.yml'
   workflow_dispatch:
 
@@ -24,16 +28,22 @@ jobs:
           node-version: 22
       - name: Reproduce pinned BottleShip build unchanged
         run: node scripts/build-bottleship.mjs
+      - name: Install WinWeb build dependencies
+        run: npm install
+      - name: Compile worker-only WinWeb HLE engine bundle
+        run: npm run engine:hle:bundle
       - name: Record upstream proof
         run: |
           printf '%s\n' \
             'BottleShip revision: a7c8543d75569d48890d48744897a0ffe3fb02f7' \
             "Built at: $(date -u +%FT%TZ)" \
-            "Dist files: $(find vendor/bottleship/dist -type f | wc -l)" \
+            "Upstream dist files: $(find vendor/bottleship/dist -type f | wc -l)" \
+            "WinWeb engine files: $(find dist/engines/bottleship -type f | wc -l)" \
             > hle-upstream-proof.txt
       - uses: actions/upload-artifact@v4
         with:
-          name: bottleship-upstream-proof
+          name: bottleship-hle-engine-proof
           path: |
             hle-upstream-proof.txt
+            dist/engines/bottleship
             vendor/bottleship/dist

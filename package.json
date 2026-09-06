@@ -9,7 +9,9 @@
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "check": "npm run typecheck && npm run build",
-    "upstream:sync": "node scripts/sync-upstreams.mjs"
+    "upstream:sync": "node scripts/sync-upstreams.mjs",
+    "engine:hle:upstream": "node scripts/build-bottleship.mjs",
+    "engine:hle:bundle": "node scripts/build-hle-engine.mjs"
   },
   "dependencies": {
     "coi-serviceworker": "^0.1.7"
