@@ -11,6 +11,9 @@ MIT License. Copyright (c) 2020 Microsoft Corporation.
 
 The upstream license permits use, modification and redistribution provided the copyright notice and permission notice are retained. Source: https://github.com/microsoft/fluentui-system-icons
 
+### Windows compatibility mark
+WinWeb uses a local four-pane Windows-style mark in the compatibility UI and PWA icon set so users can recognize that the project targets Windows applications. Windows and the Windows logo are trademarks of Microsoft Corporation. WinWeb is an independent project and is not affiliated with, endorsed by, or sponsored by Microsoft.
+
 ## Included package dependency
 
 ### coi-serviceworker
