@@ -1,22 +1,26 @@
-# WinWeb roadmap
+# WinWeb Roadmap
 
-- [x] R0 — initialize repository and reuse-first architecture
-- [x] R1 — browser capability probe
-- [x] R2 — local bounded PE32/PE32+ inspector
-- [x] R3 — runtime router and common engine interface
-- [x] R4 — OPFS-backed local app import/container record
-- [x] R5 — iPhone-first shell and app library
-- [x] R6 — pin BottleShip + v86 and reproduce the upstream build unchanged in WinWeb CI
-- [x] R6.1 — encode the verified BottleShip worker/init/load/input protocol as a WinWeb-owned bridge
-- [ ] R7 — compile/wire BottleShip's emulator worker into the `BottleShipEngine` adapter
-- [ ] R8 — first reproducible x86 Win32 EXE launch in WinWeb
-- [ ] R9 — connect iPhone virtual trackpad/keyboard controls to the live guest bridge
-- [ ] R10 — WebGPU D3D test through BottleShip path
-- [ ] R11 — AudioWorklet guest audio proof
-- [ ] R12 — Inno installer extraction fast path
-- [ ] R13 — Wine32 isolated fallback engine
-- [ ] R14 — Boxedwine64 Memory64-capable browser proof
-- [ ] R15 — Safari wasm32 x64 research/proof
-- [ ] R16 — Code-OSS optimized adapter
-- [ ] R17 — compatibility evidence database + automated smoke harness
-- [ ] R18 — profile before considering a custom XRun DBT
+## Current focus
+
+WinWeb is moving from local executable inspection into verified browser execution.
+
+- [x] iPhone-first Windows-style shell
+- [x] Local bounded PE inspection
+- [x] x86/x64/ARM/ARM64 detection
+- [x] Runtime recommendation router
+- [x] BottleShip/v86 upstream pin and reproducible worker build
+- [x] Fullscreen runtime host UI with touch pointer and basic Windows keys
+- [x] On-demand cross-origin isolation flow for SharedArrayBuffer
+- [x] Lazy x86 engine deployment in GitHub Pages
+- [x] Mobile BottleShip build profile reduced from 1 GB to 256 MB guest RAM
+- [ ] Real-device proof for a lightweight x86 EXE on iPhone Safari
+- [ ] Persistent executable/app containers after a successful run
+- [ ] Expanded touch keyboard and clipboard bridge
+- [ ] Wine32 fallback engine
+- [ ] Experimental x64/Wine64 engine
+- [ ] Safari-compatible x64 research path
+- [ ] Code-OSS optimized development adapter
+
+## Compatibility rule
+
+WinWeb must never label an application as working without a real execution result. Unsupported or not-yet-wired runtime families remain clearly marked as experimental or unavailable.
