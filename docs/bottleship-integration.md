@@ -1,45 +1,60 @@
 # BottleShip integration
 
-WinWeb pins BottleShip at `a7c8543d75569d48890d48744897a0ffe3fb02f7` as a Git submodule under `vendor/bottleship`.
+WinWeb keeps BottleShip as a pinned upstream engine rather than copying its React/game-library shell.
 
-The first integration rule is **reproduce upstream unchanged before editing it**. The `HLE Upstream Proof` workflow checks out BottleShip recursively (including its `vendor/v86` fork), installs its Bun workspace dependencies, runs its typecheck, builds the production app, and keeps the resulting `dist/` as an artifact. That proof currently passes.
+## Current host boundary
 
-## Verified worker boundary
-
-The pinned BottleShip host creates `src/worker/emulator.worker.ts` as a module worker. The verified host contract includes:
-
-- `init` with an `OffscreenCanvas`, a 1024-byte `SharedArrayBuffer`, width and height;
-- worker `ready`, `error`, `loading_progress`, `first_present`, `process_exit` and window-title events;
-- `load_bundle` with a URL, one local Blob, or multiple local Blobs;
-- `resize`, pause/resume and runtime-settings messages;
-- a shared Int32 input layout with pointer state and a 256-key Windows virtual-key bitfield.
-
-WinWeb now encodes that seam in `src/engines/bottleship/bridge.ts` and `protocol.ts`. The bridge owns initialization, readiness, bundle loading, pointer deltas, wheel state, Windows key state, resize and normalized lifecycle events.
+WinWeb uses BottleShip's worker protocol directly:
 
 ```text
-WinWeb AppStorage / selected EXE
-        |
-        v
-BottleShipEngine adapter
-        |
-        v
-BottleShipBridge
-        |
-        +-- OffscreenCanvas transfer
-        +-- SharedArrayBuffer input
-        +-- load_bundle { blob | blobs | url }
-        +-- progress / ready / first_present / crash events
-        v
-BottleShip emulator.worker.ts
-        |
-        v
-v86 + Win32/COM/DirectX HLE
+WinWeb shell
+  -> select/inspect x86 PE
+  -> user presses Run application
+  -> enable cross-origin isolation only when needed
+  -> restore selected EXE locally after the one-time reload
+  -> dynamically import engines/bottleship/engine-loader.js
+  -> create BottleShip worker
+  -> transfer OffscreenCanvas
+  -> allocate 1 KB SharedArrayBuffer input block
+  -> post { type: "init", canvas, inputBuffer, width, height }
+  -> wait for ready
+  -> post { type: "load_bundle", blob }
+  -> first_present => application visible
 ```
 
-## Next stage
+The shell never imports BottleShip at startup.
 
-The missing piece is no longer the host protocol. R7 is to make BottleShip's worker and its runtime assets (`v86.wasm`, worker chunks/assets, audio/unpack assets) a build product that WinWeb's Vite application can instantiate without importing BottleShip's React/game-library shell.
+## iPhone memory profile
 
-The integration must preserve BottleShip's Safari rule that the emulator worker has no dynamic chunk loading.
+BottleShip upstream currently defaults to 1 GB guest RAM. WinWeb patches only its own generated BottleShip bundle to use a 256 MB mobile profile so an iPhone 11 Safari tab is less likely to be terminated by memory pressure. The upstream Git submodule remains unchanged and mergeable.
 
-Do not mark the HLE adapter as integrated merely because the upstream project builds or the bridge compiles. A redistributable x86 sample must actually reach `first_present` through WinWeb first.
+## Runtime asset rebasing
+
+The WinWeb engine build rewrites BottleShip's site-root runtime asset references into engine-relative paths, for example:
+
+```text
+/v86.wasm -> ./runtime/v86.wasm
+/bios/seabios.bin -> ./runtime/bios/seabios.bin
+/bios/vgabios.bin -> ./runtime/bios/vgabios.bin
+/unpack-streaming.wasm -> ./runtime/unpack-streaming.wasm
+/unpack-buffered.wasm -> ./runtime/unpack-buffered.wasm
+/video-decoder.wasm -> ./runtime/video-decoder.wasm
+```
+
+This is required for a GitHub Pages project site under `/WinWeb/`.
+
+## Browser requirements for direct HLE launch
+
+The current BottleShip worker requires:
+
+- WebAssembly
+- Worker
+- SharedArrayBuffer
+- cross-origin isolation
+- OffscreenCanvas transfer support
+
+GitHub Pages does not supply COOP/COEP response headers directly, so WinWeb registers a small isolation service worker only after the user presses **Run application**. The Home screen does not depend on that worker.
+
+## Compatibility rule
+
+A Run button is offered only for compatible x86/32-bit PE applications routed to BottleShip HLE. x64/Wine64 and other engines remain marked unavailable/experimental until their launch paths have real runtime proof.
