@@ -1,0 +1,39 @@
+name: HLE Upstream Proof
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.gitmodules'
+      - 'vendor/bottleship'
+      - 'scripts/build-bottleship.mjs'
+      - '.github/workflows/hle-upstream.yml'
+  workflow_dispatch:
+
+jobs:
+  bottleship-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: oven-sh/setup-bun@v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Reproduce pinned BottleShip build unchanged
+        run: node scripts/build-bottleship.mjs
+      - name: Record upstream proof
+        run: |
+          printf '%s\n' \
+            'BottleShip revision: a7c8543d75569d48890d48744897a0ffe3fb02f7' \
+            "Built at: $(date -u +%FT%TZ)" \
+            "Dist files: $(find vendor/bottleship/dist -type f | wc -l)" \
+            > hle-upstream-proof.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bottleship-upstream-proof
+          path: |
+            hle-upstream-proof.txt
+            vendor/bottleship/dist

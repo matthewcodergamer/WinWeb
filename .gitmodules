@@ -1,0 +1,4 @@
+[submodule "vendor/bottleship"]
+	path = vendor/bottleship
+	url = https://github.com/jenissimo/bottleship.git
+	branch = main
