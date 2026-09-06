@@ -1,14 +1,20 @@
-# BottleShip integration plan
+# BottleShip integration
 
 WinWeb pins BottleShip at `a7c8543d75569d48890d48744897a0ffe3fb02f7` as a Git submodule under `vendor/bottleship`.
 
-The first integration rule is **reproduce upstream unchanged before editing it**. The `HLE Upstream Proof` workflow checks out BottleShip recursively (including its `vendor/v86` fork), installs its Bun workspace dependencies, runs its typecheck, and builds the production app. The resulting `dist/` is retained as a workflow artifact.
+The first integration rule is **reproduce upstream unchanged before editing it**. The `HLE Upstream Proof` workflow checks out BottleShip recursively (including its `vendor/v86` fork), installs its Bun workspace dependencies, runs its typecheck, builds the production app, and keeps the resulting `dist/` as an artifact. That proof currently passes.
 
-## Worker boundary discovered upstream
+## Verified worker boundary
 
-BottleShip's host creates `src/worker/emulator.worker.ts` as a module worker. Its worker already supports the `load_bundle` command and accepts both a URL and local Blob-based load paths. This is the seam WinWeb should integrate against rather than importing BottleShip's game-library UI.
+The pinned BottleShip host creates `src/worker/emulator.worker.ts` as a module worker. The verified host contract includes:
 
-Target bridge:
+- `init` with an `OffscreenCanvas`, a 1024-byte `SharedArrayBuffer`, width and height;
+- worker `ready`, `error`, `loading_progress`, `first_present`, `process_exit` and window-title events;
+- `load_bundle` with a URL, one local Blob, or multiple local Blobs;
+- `resize`, pause/resume and runtime-settings messages;
+- a shared Int32 input layout with pointer state and a 256-key Windows virtual-key bitfield.
+
+WinWeb now encodes that seam in `src/engines/bottleship/bridge.ts` and `protocol.ts`. The bridge owns initialization, readiness, bundle loading, pointer deltas, wheel state, Windows key state, resize and normalized lifecycle events.
 
 ```text
 WinWeb AppStorage / selected EXE
@@ -16,10 +22,13 @@ WinWeb AppStorage / selected EXE
         v
 BottleShipEngine adapter
         |
+        v
+BottleShipBridge
+        |
         +-- OffscreenCanvas transfer
-        +-- keyboard / mouse messages
-        +-- load_bundle { blob | url }
-        +-- progress / ready / crash events
+        +-- SharedArrayBuffer input
+        +-- load_bundle { blob | blobs | url }
+        +-- progress / ready / first_present / crash events
         v
 BottleShip emulator.worker.ts
         |
@@ -27,13 +36,10 @@ BottleShip emulator.worker.ts
 v86 + Win32/COM/DirectX HLE
 ```
 
-## Integration stages
+## Next stage
 
-1. **Upstream proof** — current workflow; no WinWeb-specific patches.
-2. **Bridge package** — create a tiny WinWeb-owned host adapter that initializes the BottleShip worker and forwards canvas/input/runtime events.
-3. **Bundle ingestion** — use BottleShip's own WGB/installer ingest code rather than inventing a second format.
-4. **Raw PE path** — for truly portable x86 PE files, construct the minimum manifest/filesystem expected by the worker.
-5. **UI removal by composition** — WinWeb owns all launcher/application chrome; BottleShip remains an engine worker, not a visible nested app.
-6. **Regression proof** — one redistributable x86 sample must launch through WinWeb before `BottleShipEngine.available` becomes true.
+The missing piece is no longer the host protocol. R7 is to make BottleShip's worker and its runtime assets (`v86.wasm`, worker chunks/assets, audio/unpack assets) a build product that WinWeb's Vite application can instantiate without importing BottleShip's React/game-library shell.
 
-Do not mark the HLE adapter as integrated merely because the upstream project builds.
+The integration must preserve BottleShip's Safari rule that the emulator worker has no dynamic chunk loading.
+
+Do not mark the HLE adapter as integrated merely because the upstream project builds or the bridge compiles. A redistributable x86 sample must actually reach `first_present` through WinWeb first.

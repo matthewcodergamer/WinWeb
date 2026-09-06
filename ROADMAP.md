@@ -6,10 +6,11 @@
 - [x] R3 — runtime router and common engine interface
 - [x] R4 — OPFS-backed local app import/container record
 - [x] R5 — iPhone-first shell and app library
-- [ ] R6 — build pinned BottleShip unchanged inside WinWeb CI
-- [ ] R7 — wire BottleShip/v86 HLE surface into `XRunRuntimeEngine`
+- [x] R6 — pin BottleShip + v86 and reproduce the upstream build unchanged in WinWeb CI
+- [x] R6.1 — encode the verified BottleShip worker/init/load/input protocol as a WinWeb-owned bridge
+- [ ] R7 — compile/wire BottleShip's emulator worker into the `BottleShipEngine` adapter
 - [ ] R8 — first reproducible x86 Win32 EXE launch in WinWeb
-- [ ] R9 — input bridge + iPhone virtual trackpad/keyboard into guest
+- [ ] R9 — connect iPhone virtual trackpad/keyboard controls to the live guest bridge
 - [ ] R10 — WebGPU D3D test through BottleShip path
 - [ ] R11 — AudioWorklet guest audio proof
 - [ ] R12 — Inno installer extraction fast path
