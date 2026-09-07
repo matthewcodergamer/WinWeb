@@ -3,6 +3,7 @@
   "updated": "2026-09-06",
   "projects": [
     {"id":"bottleship","repo":"https://github.com/jenissimo/bottleship.git","ref":"a7c8543d75569d48890d48744897a0ffe3fb02f7","license":"Apache-2.0","role":"primary-hle","syncByDefault":true},
+    {"id":"v86-winweb","repo":"https://github.com/matthewcodergamer/v86.git","branch":"winweb-bottleship","ref":"97704021d3b9f75ef5b1504e9f1f1e7fe95094d4","license":"BSD-2-Clause","role":"x86-core-hle-and-full-pc","syncByDefault":true},
     {"id":"boxedwine64","repo":"https://github.com/andrewnakas/Boxedwine64.git","ref":"dee2ff3f08d9b5bdfe78c15bdefbf8f89b4f1639","license":"GPL-2.0","role":"experimental-wine64","syncByDefault":false},
     {"id":"open-browser-porter","repo":"https://github.com/aeiouofficial/open_browser_porter.git","ref":"main","license":"CHECK-UPSTREAM","role":"networking-research","syncByDefault":false}
   ]
