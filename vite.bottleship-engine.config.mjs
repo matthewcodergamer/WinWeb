@@ -31,13 +31,16 @@ function winWebBottleShipPatch() {
     transform(code, id) {
       if (!id.includes('/vendor/bottleship/')) return null;
       let next = code;
-      if (id.endsWith('/src/worker/core/cpu/emulator-config.ts')) {
+      // Vite appends worker query parameters to module ids. Use includes rather than
+      // endsWith so the mobile memory/runtime patch is applied to the actual worker
+      // build as well as an unqueried source import.
+      if (id.includes('/src/worker/core/cpu/emulator-config.ts')) {
         next = next.replace(
           /export const EMU_MEMORY_SIZE\s*=\s*1024\s*\*\s*1024\s*\*\s*1024\s*;/,
           'export const EMU_MEMORY_SIZE = 256 * 1024 * 1024;'
         );
       }
-      if (id.endsWith('/src/worker/emulator.worker.ts')) {
+      if (id.includes('/src/worker/emulator.worker.ts')) {
         // The WinWeb v86 fork consumes this option and hard-fails startup rather than
         // letting Safari's asset loader retry forever. Keep it near wasm_path so this
         // patch remains easy to audit against upstream BottleShip.
@@ -97,7 +100,7 @@ export default defineConfig({
     format: 'iife',
     rollupOptions: {
       output: {
-        entryFileNames: (chunk) => chunk.facadeModuleId?.endsWith('/src/worker/emulator.worker.ts') ? 'emulator-worker.js' : 'worker-[name]-[hash].js',
+        entryFileNames: (chunk) => chunk.facadeModuleId?.includes('/src/worker/emulator.worker.ts') ? 'emulator-worker.js' : 'worker-[name]-[hash].js',
         chunkFileNames: 'worker-chunk-[name]-[hash].js',
         assetFileNames: 'worker-[name]-[hash][extname]'
       }
