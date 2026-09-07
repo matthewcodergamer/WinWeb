@@ -1,7 +1,7 @@
 {
   "name": "winweb-xrun",
   "private": true,
-  "version": "0.1.1",
+  "version": "0.2.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,6 +10,8 @@
     "typecheck": "tsc --noEmit",
     "check": "npm run typecheck && npm run build",
     "upstream:sync": "node scripts/sync-upstreams.mjs",
+    "engine:v86:prepare": "node scripts/prepare-winweb-v86.mjs",
+    "engine:v86:assets": "node scripts/copy-v86-vm-assets.mjs",
     "engine:hle:upstream": "node scripts/build-bottleship.mjs",
     "engine:hle:bundle": "node scripts/build-hle-engine.mjs"
   },
