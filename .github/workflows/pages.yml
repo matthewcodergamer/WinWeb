@@ -21,7 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: recursive
+          submodules: true
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -29,12 +29,14 @@ jobs:
       - uses: actions/configure-pages@v5
       - name: Install WinWeb dependencies
         run: npm install
+      - name: Prepare WinWeb-owned v86 core
+        run: npm run engine:v86:prepare
       - name: Install pinned BottleShip dependencies
         run: bun install --frozen-lockfile
         working-directory: vendor/bottleship
       - name: Build WinWeb shell
         run: npm run build
-      - name: Build and verify lazy BottleShip x86 engine
+      - name: Build and verify BottleShip HLE + native v86 PC engine
         run: npm run engine:hle:bundle
       - name: Verify deployable runtime files
         run: |
@@ -43,6 +45,12 @@ jobs:
           test -f dist/engines/bottleship/runtime/bios/seabios.bin
           test -f dist/engines/bottleship/runtime/bios/vgabios.bin
           test -f dist/engines/bottleship/emulator-worker.js
+          test -f dist/engines/v86-vm/libv86.mjs
+          test -f dist/engines/v86-vm/v86.wasm
+          test -f dist/engines/v86-vm/bios/seabios.bin
+          test -f dist/engines/v86-vm/bios/vgabios.bin
+          test -f dist/engines/v86-vm/iso9660.mjs
+          test "$(git -C vendor/bottleship/vendor/v86 rev-parse HEAD)" = "97704021d3b9f75ef5b1504e9f1f1e7fe95094d4"
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
