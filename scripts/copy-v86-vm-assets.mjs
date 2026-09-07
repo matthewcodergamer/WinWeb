@@ -19,6 +19,18 @@ for (const [from, to] of copies) {
   await copyFile(input, path.join(destination, to));
 }
 
+// The fork keeps this wrapper next to the source tree and imports ../build/libv86.mjs.
+// In the deployable v86-vm directory libv86.mjs sits beside the wrapper, so rebase
+// that one import while packaging. This gives both BottleShip HLE and the full-PC
+// fallback the same bounded, Safari-safe WinWeb v86 startup behavior.
+const wrapperSource = path.join(source, 'winweb/winweb-v86.mjs');
+let wrapper = await readFile(wrapperSource, 'utf8');
+wrapper = wrapper.replaceAll('../build/libv86.mjs', './libv86.mjs');
+if (!wrapper.includes('createWinWebWasmLoader') || !wrapper.includes('emulator-error')) {
+  throw new Error('The pinned v86 fork is missing the WinWeb runtime wrapper contract.');
+}
+await writeFile(path.join(destination, 'winweb-v86.mjs'), wrapper, 'utf8');
+
 // v86 already contains a small ISO9660 generator. Package that implementation for
 // WinWeb so a selected EXE can be exposed to an already-installed Windows guest as
 // a virtual CD without uploading the application anywhere. The source only imports
@@ -31,14 +43,19 @@ iso = iso.replace(
 );
 await writeFile(path.join(destination, 'iso9660.mjs'), iso, 'utf8');
 
+const lock = JSON.parse(await readFile(path.resolve('upstreams.lock.json'), 'utf8'));
+const v86 = lock.projects.find((project) => project.id === 'v86-winweb');
+if (!v86) throw new Error('upstreams.lock.json is missing v86-winweb.');
 const manifest = {
   engine: 'v86',
-  role: 'full-x86-pc-fallback',
-  source: 'https://github.com/matthewcodergamer/v86',
-  branch: 'winweb-bottleship',
-  revision: '97704021d3b9f75ef5b1504e9f1f1e7fe95094d4',
+  runtime: 'WinWeb custom v86',
+  role: 'x86-core-hle-and-full-pc',
+  source: v86.repo,
+  branch: v86.branch,
+  revision: v86.ref,
+  wasmTimeoutMs: 20000,
   generatedAt: new Date().toISOString(),
 };
 await writeFile(path.join(destination, 'manifest.json'), JSON.stringify(manifest, null, 2) + '\n', 'utf8');
 
-console.log(`Packaged native v86 PC fallback in ${destination}`);
+console.log(`Packaged WinWeb custom v86 runtime in ${destination} @ ${v86.ref}`);
