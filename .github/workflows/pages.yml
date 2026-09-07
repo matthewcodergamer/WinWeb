@@ -46,11 +46,14 @@ jobs:
           test -f dist/engines/bottleship/runtime/bios/vgabios.bin
           test -f dist/engines/bottleship/emulator-worker.js
           test -f dist/engines/v86-vm/libv86.mjs
+          test -f dist/engines/v86-vm/winweb-v86.mjs
           test -f dist/engines/v86-vm/v86.wasm
           test -f dist/engines/v86-vm/bios/seabios.bin
           test -f dist/engines/v86-vm/bios/vgabios.bin
           test -f dist/engines/v86-vm/iso9660.mjs
-          test "$(git -C vendor/bottleship/vendor/v86 rev-parse HEAD)" = "97704021d3b9f75ef5b1504e9f1f1e7fe95094d4"
+          grep -q "createWinWebWasmLoader" dist/engines/v86-vm/winweb-v86.mjs
+          grep -q "WinWeb v86 startup failed" dist/engines/bottleship/emulator-worker.js
+          test "$(git -C vendor/bottleship/vendor/v86 rev-parse HEAD)" = "27c2d676ff023ab87316b6184205e3087bdc272d"
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
