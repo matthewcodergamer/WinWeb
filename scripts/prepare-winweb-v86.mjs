@@ -64,8 +64,14 @@ for (const required of [
   'bios/seabios.bin',
   'bios/vgabios.bin',
   'src/iso9660.js',
+  'winweb/winweb-v86.mjs',
 ]) {
   await access(path.join(nested, required));
 }
 
-console.log(`WinWeb v86 core ready: ${spec.repo} @ ${actual}`);
+const wrapper = await readFile(path.join(nested, 'winweb/winweb-v86.mjs'), 'utf8');
+for (const marker of ['createWinWebWasmLoader', 'emulator-error', 'winweb-wasm-progress']) {
+  if (!wrapper.includes(marker)) throw new Error(`WinWeb v86 wrapper is missing ${marker}.`);
+}
+
+console.log(`WinWeb custom v86 core ready: ${spec.repo} @ ${actual}`);
