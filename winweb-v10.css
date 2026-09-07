@@ -1,0 +1,34 @@
+/* WinWeb V10 — dual-runtime navigation: direct EXE HLE + full custom-v86 PC */
+.ww-side-link,.ww-taskbar-link,.ww-quick-link{color:inherit;text-decoration:none;-webkit-tap-highlight-color:transparent}
+.ww-side-link{cursor:pointer}
+.ww-side-link:hover{background:#ececec}
+
+.ww-quick-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+.ww-quick-grid>button,.ww-quick-grid>.ww-quick-link{
+  min-height:78px;padding:11px;border:1px solid rgba(0,0,0,.10);border-radius:14px;background:#fff;
+  display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:10px;text-align:left;cursor:pointer;
+  box-shadow:var(--ww-shadow);transition:transform .12s ease,background .15s ease,box-shadow .15s ease
+}
+.ww-quick-grid>button:hover,.ww-quick-grid>.ww-quick-link:hover{background:#fafafa}
+.ww-quick-grid>button:active,.ww-quick-grid>.ww-quick-link:active{transform:scale(.985)}
+.ww-quick-grid>.ww-quick-link strong{display:block;font-size:13px}
+.ww-quick-grid>.ww-quick-link small{display:block;margin-top:3px;color:#777;font-size:11px}
+.ww-quick-grid>.ww-quick-link:focus-visible,.ww-side-link:focus-visible,.ww-taskbar-link:focus-visible{outline:2px solid rgba(37,111,211,.7);outline-offset:2px}
+
+.ww-taskbar>.ww-taskbar-link{
+  justify-self:center;width:56px;height:56px;border-radius:14px;display:grid;place-items:center
+}
+.ww-taskbar>.ww-taskbar-link:active{background:#e7e7e7;transform:scale(.985)}
+.ww-taskbar>.ww-taskbar-link img{width:27px;height:27px}
+
+@media(max-width:760px){
+  .ww-quick-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+  .ww-quick-grid>button,.ww-quick-grid>.ww-quick-link{min-height:88px;padding:11px;grid-template-columns:auto minmax(0,1fr);justify-items:stretch;text-align:left;gap:10px}
+  .ww-quick-grid>.ww-quick-link strong{font-size:13px}.ww-quick-grid>.ww-quick-link small{display:block;font-size:10.5px;line-height:1.25}
+  .ww-taskbar{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+@media(max-width:390px){
+  .ww-quick-grid{gap:9px}
+  .ww-quick-grid>button,.ww-quick-grid>.ww-quick-link{min-height:82px;padding:9px;gap:8px}
+  .ww-taskbar>.ww-taskbar-link{width:53px;height:53px}
+}
