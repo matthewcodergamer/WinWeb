@@ -12,6 +12,8 @@ let emulator = null;
 let V86Ctor = null;
 let generateIso = null;
 let rows = [];
+let startupTimer = 0;
+let failed = false;
 
 function send(type, detail = {}) {
   try { parent.postMessage({ type, ...detail }, location.origin); } catch (_) {}
@@ -32,13 +34,21 @@ function setProgress(value, title, copy) {
 function log(message, level = 'info') {
   const stamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
   rows.push(`[${stamp}] ${level.toUpperCase()}  ${message}`);
-  if (rows.length > 80) rows.splice(0, rows.length - 80);
+  if (rows.length > 100) rows.splice(0, rows.length - 100);
   logNode.textContent = rows.join('\n');
   logNode.scrollTop = logNode.scrollHeight;
   send('winweb-v86-log', { level, message });
 }
 
+function clearStartupTimer() {
+  if (startupTimer) clearTimeout(startupTimer);
+  startupTimer = 0;
+}
+
 function fail(message) {
+  if (failed) return;
+  failed = true;
+  clearStartupTimer();
   setPill('Error', 'error');
   setProgress(100, 'PC runtime error', message);
   log(message, 'error');
@@ -64,15 +74,15 @@ function fitScreen(width, height) {
 
 async function ensureEngine() {
   if (V86Ctor) return;
-  setProgress(8, 'Loading v86', 'Loading the WinWeb-owned x86-to-Wasm engine.');
-  log('Loading native v86 module');
-  const engine = await import('./engines/v86-vm/libv86.mjs?v=20260906-vm1');
+  setProgress(8, 'Loading WinWeb v86', 'Loading the WinWeb-owned Safari-safe x86-to-Wasm engine.');
+  log('Loading custom WinWeb v86 module');
+  const engine = await import('./engines/v86-vm/winweb-v86.mjs?v=20260906-vm2');
   V86Ctor = engine.V86 || engine.default;
-  if (typeof V86Ctor !== 'function') throw new Error('The packaged v86 module did not export V86.');
-  const iso = await import('./engines/v86-vm/iso9660.mjs?v=20260906-vm1');
+  if (typeof V86Ctor !== 'function') throw new Error('The packaged WinWeb v86 module did not export V86.');
+  const iso = await import('./engines/v86-vm/iso9660.mjs?v=20260906-vm2');
   generateIso = iso.generate;
   if (typeof generateIso !== 'function') throw new Error('The v86 ISO generator is missing.');
-  log('v86 JavaScript engine loaded');
+  log(`Custom v86 JavaScript engine loaded${engine.WINWEB_V86_BUILD?.profile ? ` (${engine.WINWEB_V86_BUILD.profile})` : ''}`);
 }
 
 async function buildApplicationCd(exeFile) {
@@ -97,8 +107,10 @@ async function buildApplicationCd(exeFile) {
 
 async function bootPc({ osFile, exeFile, memoryMB }) {
   if (!(osFile instanceof File)) throw new Error('Choose a Windows, ReactOS, or other x86 PC disk image first.');
+  failed = false;
+  clearStartupTimer();
   if (emulator) {
-    try { emulator.stop(); } catch (_) {}
+    try { await emulator.stop(); } catch (_) {}
     emulator = null;
   }
 
@@ -117,12 +129,13 @@ async function bootPc({ osFile, exeFile, memoryMB }) {
   log('Disk access is lazy: large local images are read in slices instead of copied into iPhone RAM.');
 
   const options = {
-    wasm_path: './engines/v86-vm/v86.wasm?v=20260906-vm1',
+    wasm_path: './engines/v86-vm/v86.wasm?v=20260906-vm2',
+    winweb_wasm_timeout_ms: 20000,
     memory_size: ram * 1024 * 1024,
     vga_memory_size: 8 * 1024 * 1024,
     screen_container: screen,
-    bios: { url: './engines/v86-vm/bios/seabios.bin?v=20260906-vm1' },
-    vga_bios: { url: './engines/v86-vm/bios/vgabios.bin?v=20260906-vm1' },
+    bios: { url: './engines/v86-vm/bios/seabios.bin?v=20260906-vm2' },
+    vga_bios: { url: './engines/v86-vm/bios/vgabios.bin?v=20260906-vm2' },
     disable_speaker: false,
     autostart: true,
   };
@@ -135,8 +148,27 @@ async function bootPc({ osFile, exeFile, memoryMB }) {
   emulator = new V86Ctor(options);
   window.emulator = emulator;
 
+  emulator.add_listener('winweb-wasm-progress', info => {
+    if (!info) return;
+    const total = Number(info.total || 0);
+    const loaded = Number(info.loaded || 0);
+    const ratio = total > 0 ? loaded / total : 0;
+    const p = 8 + Math.round(Math.max(0, Math.min(1, ratio)) * 14);
+    const amount = total > 0 ? `${(loaded / 1048576).toFixed(1)} / ${(total / 1048576).toFixed(1)} MB` : `${(loaded / 1048576).toFixed(1)} MB`;
+    setProgress(p, 'Loading WinWeb v86', `Downloading x86 core… ${amount}`);
+  });
+  emulator.add_listener('winweb-wasm-phase', info => {
+    const phase = String(info?.phase || 'unknown');
+    const mode = String(info?.mode || 'primary');
+    log(`WASM ${phase} (${mode})${info?.bytes ? ` · ${(Number(info.bytes) / 1048576).toFixed(1)} MB` : ''}`);
+    if (phase === 'compile') setProgress(22, 'Compiling x86 core', 'Safari is instantiating the v86 WebAssembly engine.');
+    if (phase === 'ready') setProgress(25, 'x86 core ready', 'Loading PC firmware and local boot media.');
+  });
+  emulator.add_listener('emulator-error', info => {
+    fail(info?.message || String(info || 'WinWeb v86 failed to start.'));
+  });
   emulator.add_listener('download-progress', info => {
-    if (!info || !info.total) return;
+    if (!info || !info.total || String(info.file_name || '').includes('v86.wasm')) return;
     const p = 25 + Math.round((info.loaded / info.total) * 20);
     setProgress(p, 'Loading PC firmware', info.file_name || 'Loading v86 asset…');
   });
@@ -145,6 +177,7 @@ async function bootPc({ osFile, exeFile, memoryMB }) {
     log('Emulator loaded');
   });
   emulator.add_listener('emulator-ready', () => {
+    clearStartupTimer();
     setProgress(72, 'Booting PC', 'SeaBIOS has control. Waiting for the guest operating system.');
     setPill('Booting');
     log('Emulator ready; guest boot started');
@@ -152,6 +185,7 @@ async function bootPc({ osFile, exeFile, memoryMB }) {
     send('winweb-v86-booting', { osName: osFile.name });
   });
   emulator.add_listener('emulator-started', () => {
+    clearStartupTimer();
     setPill('Running', 'ready');
     setProgress(100, 'PC running', appCd ? 'Windows can open WINWEB.EXE from the virtual CD drive.' : 'The x86 guest is running.');
     setTimeout(() => boot.classList.add('done'), 650);
@@ -168,6 +202,14 @@ async function bootPc({ osFile, exeFile, memoryMB }) {
     log(`Guest display ${width}×${height}`);
     setTimeout(() => fitScreen(width, height), 0);
   });
+
+  // A bad core/BIOS path must never leave the iPhone staring at a spinner. The
+  // custom WASM loader has its own 20s deadline; this wider watchdog also covers
+  // firmware/device initialization before emulator-ready.
+  startupTimer = setTimeout(() => {
+    try { emulator?.stop(); } catch (_) {}
+    fail('WinWeb v86 did not reach emulator-ready within 30 seconds. Open the runtime log for the last completed startup phase.');
+  }, 30000);
 }
 
 addEventListener('message', event => {
@@ -183,5 +225,5 @@ addEventListener('resize', () => {
 });
 
 setPill('Ready', 'ready');
-log('Native v86 host page ready');
+log('WinWeb custom v86 host page ready');
 send('winweb-v86-ready');
