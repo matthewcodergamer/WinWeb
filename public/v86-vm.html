@@ -5,27 +5,30 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
   <meta name="color-scheme" content="dark" />
   <meta name="theme-color" content="#111318" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <title>WinWeb PC Runtime</title>
   <style>
     :root{font-family:"Segoe UI Variable","Segoe UI",-apple-system,BlinkMacSystemFont,system-ui,sans-serif;color:#f5f5f5;background:#090a0d}
-    *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#090a0d}body{position:fixed;inset:0}
+    *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#090a0d}body{position:fixed;inset:0}button,input,select{font:inherit}
     .vm{height:100dvh;display:grid;grid-template-rows:58px minmax(0,1fr) auto;background:radial-gradient(circle at 50% 10%,#17283b 0,#0a0d11 42%,#050607 100%)}
     .bar{display:flex;align-items:center;gap:10px;padding:0 12px;border-bottom:1px solid rgba(255,255,255,.1);background:rgba(25,28,34,.95);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
-    .mark{width:31px;height:31px;border-radius:9px;background:#202632;display:grid;place-items:center;overflow:hidden}.mark img{width:20px;height:20px}.title{min-width:0;flex:1}.title strong{display:block;font-size:14px}.title small{display:block;margin-top:2px;color:#aeb4bf;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .back{width:34px;height:34px;border:1px solid rgba(255,255,255,.11);border-radius:9px;background:#252932;color:#fff;text-decoration:none;display:grid;place-items:center;font-size:21px;line-height:1}.mark{width:31px;height:31px;border-radius:9px;background:#202632;display:grid;place-items:center;overflow:hidden}.mark img{width:20px;height:20px}.title{min-width:0;flex:1}.title strong{display:block;font-size:14px}.title small{display:block;margin-top:2px;color:#aeb4bf;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .pill{height:28px;padding:0 9px;border:1px solid rgba(255,255,255,.12);border-radius:999px;background:#242830;color:#c9ced7;font-size:10px;display:flex;align-items:center;gap:6px}.pill i{width:7px;height:7px;border-radius:50%;background:#d9a300}.pill.ready i{background:#6ccb5f}.pill.error i{background:#e35d5d}
     .stage{position:relative;min-height:0;display:grid;place-items:center;overflow:hidden;padding:10px}
     #screen_container{max-width:100%;max-height:100%;display:grid;place-items:center;outline:none;touch-action:none}#screen_container>div{white-space:pre;font:14px/14px monospace;color:#fff;background:#000}#screen_container canvas{display:none;max-width:100%;max-height:100%;image-rendering:auto;background:#000;box-shadow:0 20px 80px rgba(0,0,0,.5)}
-    .boot{position:absolute;inset:0;display:grid;place-items:center;padding:20px;background:rgba(5,7,9,.92);z-index:3}.boot.done{opacity:0;pointer-events:none;transition:opacity .28s ease}.card{width:min(430px,94%);padding:20px;border:1px solid rgba(255,255,255,.12);border-radius:18px;background:rgba(28,31,37,.96);box-shadow:0 28px 90px rgba(0,0,0,.5);display:grid;justify-items:center;gap:12px;text-align:center}.spinner{width:28px;height:28px;border:3px solid #4a515d;border-top-color:#36a3ff;border-radius:50%;animation:spin .75s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}.card strong{font-size:18px}.card small{color:#aeb4bf;font-size:12px;line-height:1.45}.progress{width:100%;height:6px;border-radius:999px;background:#333943;overflow:hidden}.progress i{display:block;height:100%;width:4%;background:#2b88d8;transition:width .2s ease}
-    .log{min-height:56px;max-height:150px;border-top:1px solid rgba(255,255,255,.1);background:#191c22;padding:8px 12px calc(8px + env(safe-area-inset-bottom));font:10px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace;color:#aeb4bf;overflow:auto;white-space:pre-wrap}.log b{color:#fff;font-weight:600}
-    @media(max-width:430px){.vm{grid-template-rows:54px minmax(0,1fr) auto}.bar{padding:0 9px}.stage{padding:4px}.card{padding:17px}.log{max-height:116px}}
+    .boot{position:absolute;inset:0;display:grid;place-items:center;padding:18px;background:rgba(5,7,9,.94);z-index:3;overflow:auto;-webkit-overflow-scrolling:touch}.boot.done{opacity:0;pointer-events:none;transition:opacity .28s ease}.card{width:min(470px,96%);padding:20px;border:1px solid rgba(255,255,255,.12);border-radius:20px;background:rgba(28,31,37,.97);box-shadow:0 28px 90px rgba(0,0,0,.5);display:grid;gap:13px}.loading-card{justify-items:center;text-align:center}.spinner{width:28px;height:28px;border:3px solid #4a515d;border-top-color:#36a3ff;border-radius:50%;animation:spin .75s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}.card h1,.card strong{margin:0;font-size:19px}.card>p,.card>small{margin:0;color:#aeb4bf;font-size:12px;line-height:1.5}.progress{width:100%;height:6px;border-radius:999px;background:#333943;overflow:hidden}.progress i{display:block;height:100%;width:4%;background:#2b88d8;transition:width .2s ease}
+    .setup-head{display:grid;grid-template-columns:auto 1fr;gap:11px;align-items:center}.setup-icon{width:42px;height:42px;border-radius:12px;background:#20334a;display:grid;place-items:center}.setup-icon img{width:25px;height:25px}.setup-head h1{font-size:20px}.setup-head p{margin:3px 0 0;color:#aeb4bf;font-size:11px;line-height:1.4}.fields{display:grid;gap:9px}.pick,.memory{min-height:62px;border:1px solid rgba(255,255,255,.11);border-radius:13px;background:#23272e;padding:11px 12px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center}.pick{cursor:pointer}.pick strong,.memory strong{font-size:12px}.pick small,.memory small{display:block;margin-top:3px;color:#929aa6;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pick b{font-size:11px;color:#8ec7ff;background:#1c3b58;border:1px solid #2d5375;padding:7px 9px;border-radius:8px}.pick input{display:none}.memory select{height:38px;border:1px solid #525965;border-radius:9px;background:#15181d;color:#fff;padding:0 9px;min-width:116px}.hint{padding:10px 11px;border:1px solid rgba(86,163,231,.18);border-radius:11px;background:rgba(33,70,102,.24);color:#aebfd0;font-size:10.5px;line-height:1.45}.actions{display:grid;grid-template-columns:1fr;gap:8px}.primary{height:46px;border:1px solid #287bc1;border-radius:11px;background:linear-gradient(#348bd4,#2374b9);color:#fff;font-weight:650}.primary:disabled{opacity:.42}.setup-status{min-height:16px;color:#9ba4b1;font-size:10px;text-align:center}.retry{height:40px;padding:0 14px;border:1px solid rgba(255,255,255,.14);border-radius:9px;background:#292e36;color:#fff}.log{min-height:56px;max-height:150px;border-top:1px solid rgba(255,255,255,.1);background:#191c22;padding:8px 12px calc(8px + env(safe-area-inset-bottom));font:10px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace;color:#aeb4bf;overflow:auto;white-space:pre-wrap}.log b{color:#fff;font-weight:600}
+    [hidden]{display:none!important}
+    @media(max-width:430px){.vm{grid-template-rows:54px minmax(0,1fr) auto}.bar{padding:0 8px;gap:7px}.stage{padding:4px}.boot{padding:11px 8px}.card{padding:16px;border-radius:17px}.setup-head h1{font-size:18px}.pick,.memory{min-height:58px;padding:9px 10px}.log{max-height:116px}.pill{padding:0 8px}.back{width:32px;height:32px}}
   </style>
 </head>
 <body>
   <main class="vm">
     <header class="bar">
-      <span class="mark"><img src="./windows11-logo.svg" alt="" /></span>
-      <div class="title"><strong id="vm-title">WinWeb PC</strong><small id="vm-subtitle">Native v86 x86 machine</small></div>
-      <span class="pill" id="vm-pill"><i></i><span id="vm-pill-text">Waiting</span></span>
+      <a class="back" href="./" aria-label="Back to WinWeb">‹</a>
+      <span class="mark"><img src="./windows11-logo.svg?v=20260907-vm3" alt="" /></span>
+      <div class="title"><strong id="vm-title">WinWeb PC</strong><small id="vm-subtitle">Custom v86 · local x86 machine</small></div>
+      <span class="pill" id="vm-pill"><i></i><span id="vm-pill-text">Preparing</span></span>
     </header>
     <section class="stage">
       <div id="screen_container" tabindex="0" aria-label="Virtual PC screen">
@@ -33,16 +36,28 @@
         <canvas></canvas>
       </div>
       <div class="boot" id="vm-boot">
-        <div class="card">
+        <section class="card" id="vm-setup">
+          <div class="setup-head"><span class="setup-icon"><img src="./windows11-logo.svg?v=20260907-vm3" alt="" /></span><div><h1>Boot a Windows PC</h1><p>Run a real x86 guest with WinWeb's custom v86 core.</p></div></div>
+          <div class="fields">
+            <label class="pick"><span><strong>Windows / ReactOS boot image</strong><small id="vm-os-name">Choose .img, .vhd, .raw, .iso or compatible disk</small></span><b>Choose</b><input id="vm-os-file" type="file" accept=".img,.vhd,.vdi,.raw,.iso,.cdr,.bin,application/octet-stream" /></label>
+            <label class="pick"><span><strong>Windows EXE to mount</strong><small id="vm-exe-name">Optional · mounted locally as WINWEB.EXE</small></span><b>Choose</b><input id="vm-exe-file" type="file" accept=".exe,.com,.scr,application/x-msdownload,application/vnd.microsoft.portable-executable,application/octet-stream" /></label>
+            <label class="memory"><span><strong>Guest memory</strong><small>96 MB is the safest iPhone 11 starting point</small></span><select id="vm-memory"><option value="64">64 MB</option><option value="96" selected>96 MB</option><option value="128">128 MB</option><option value="192">192 MB</option><option value="256">256 MB</option></select></label>
+          </div>
+          <div class="hint">For the broadest Windows-app compatibility, use a preinstalled x86 Windows disk image or a compatible ReactOS image. WinWeb does not include or download a proprietary Windows copy. Your disk and EXE stay on this device.</div>
+          <div class="actions"><button class="primary" id="vm-start" type="button" disabled>Boot PC</button></div>
+          <div class="setup-status" id="vm-setup-status">Preparing the secure local runtime…</div>
+        </section>
+        <section class="card loading-card" id="vm-loading" hidden>
           <span class="spinner"></span>
           <strong id="vm-boot-title">Preparing PC</strong>
-          <small id="vm-boot-copy">Waiting for the Windows disk image from WinWeb.</small>
+          <small id="vm-boot-copy">Loading the custom WinWeb v86 engine.</small>
           <div class="progress"><i id="vm-progress"></i></div>
-        </div>
+          <button class="retry" id="vm-retry" type="button" hidden>Back to setup</button>
+        </section>
       </div>
     </section>
-    <pre class="log" id="vm-log"><b>WinWeb v86</b> — full x86 PC fallback ready.</pre>
+    <pre class="log" id="vm-log"><b>WinWeb custom v86</b> — local full-PC runtime.</pre>
   </main>
-  <script type="module" src="./v86-vm.mjs?v=20260906-vm1"></script>
+  <script type="module" src="./v86-vm.mjs?v=20260907-vm3"></script>
 </body>
 </html>
