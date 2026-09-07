@@ -50,6 +50,7 @@ for (const name of emitted) {
 }
 
 run(process.execPath, ['scripts/copy-bottleship-runtime-assets.mjs']);
+run(process.execPath, ['scripts/copy-v86-vm-assets.mjs']);
 
 const files = await readdir(outDir);
 const nestedWorkers = files.filter((name) => /^worker-.*\.js$/.test(name));
@@ -75,4 +76,13 @@ for (const name of jsFiles) {
 if (!combined.includes('./runtime/v86.wasm')) throw new Error('Built worker does not reference ./runtime/v86.wasm.');
 if (!combined.includes('./runtime/bios/seabios.bin')) throw new Error('Built worker does not reference relative SeaBIOS.');
 
+for (const required of [
+  'dist/engines/v86-vm/libv86.mjs',
+  'dist/engines/v86-vm/v86.wasm',
+  'dist/engines/v86-vm/bios/seabios.bin',
+  'dist/engines/v86-vm/bios/vgabios.bin',
+  'dist/engines/v86-vm/iso9660.mjs',
+]) await access(path.resolve(required));
+
 console.log(`WinWeb BottleShip engine verified. Main: emulator-worker.js; nested: ${nestedWorkers.join(', ') || 'none'}`);
+console.log('WinWeb native v86 full-PC fallback verified.');
