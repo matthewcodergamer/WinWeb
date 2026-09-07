@@ -75,14 +75,22 @@ for (const name of jsFiles) {
 }
 if (!combined.includes('./runtime/v86.wasm')) throw new Error('Built worker does not reference ./runtime/v86.wasm.');
 if (!combined.includes('./runtime/bios/seabios.bin')) throw new Error('Built worker does not reference relative SeaBIOS.');
+if (!combined.includes('WinWeb v86 startup failed')) throw new Error('BottleShip worker was not wired to the WinWeb v86 error bridge.');
+if (!combined.includes('winweb-wasm-progress')) throw new Error('BottleShip worker is missing WinWeb v86 startup progress.');
 
 for (const required of [
   'dist/engines/v86-vm/libv86.mjs',
+  'dist/engines/v86-vm/winweb-v86.mjs',
   'dist/engines/v86-vm/v86.wasm',
   'dist/engines/v86-vm/bios/seabios.bin',
   'dist/engines/v86-vm/bios/vgabios.bin',
   'dist/engines/v86-vm/iso9660.mjs',
 ]) await access(path.resolve(required));
 
+const customV86 = await readFile(path.resolve('dist/engines/v86-vm/winweb-v86.mjs'), 'utf8');
+for (const marker of ['createWinWebWasmLoader', 'emulator-error', 'winweb-wasm-progress']) {
+  if (!customV86.includes(marker)) throw new Error(`Packaged WinWeb v86 wrapper is missing ${marker}.`);
+}
+
 console.log(`WinWeb BottleShip engine verified. Main: emulator-worker.js; nested: ${nestedWorkers.join(', ') || 'none'}`);
-console.log('WinWeb native v86 full-PC fallback verified.');
+console.log('WinWeb custom v86 core verified for BottleShip HLE and full-PC fallback.');
