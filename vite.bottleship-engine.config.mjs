@@ -63,12 +63,12 @@ function winWebBottleShipPatch() {
     v86.add_listener("winweb-wasm-phase", (info: any) => {
       const phase = String(info?.phase ?? "unknown");
       const mode = String(info?.mode ?? "primary");
-      Logger.log(LogCategory.SYSTEM, `[WINWEB-V86] ${phase} (${mode})`);
+      Logger.log(LogCategory.SYSTEM, "[WINWEB-V86] " + phase + " (" + mode + ")");
     });
     v86.add_listener("emulator-error", (info: any) => {
       const message = info?.message ?? String(info ?? "v86 startup failed");
-      Logger.error(LogCategory.SYSTEM, `[WINWEB-V86] startup error: ${message}`);
-      try { (self as unknown as Worker).postMessage({ type: "error", message: `WinWeb v86 startup failed: ${message}` }); } catch { /* host may already be gone */ }
+      Logger.error(LogCategory.SYSTEM, "[WINWEB-V86] startup error: " + message);
+      try { (self as unknown as Worker).postMessage({ type: "error", message: "WinWeb v86 startup failed: " + message }); } catch { /* host may already be gone */ }
     });`);
         }
       }
