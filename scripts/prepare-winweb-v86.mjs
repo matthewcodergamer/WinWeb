@@ -36,11 +36,14 @@ await access(path.join(bottleShip, 'package.json'));
 
 // BottleShip declares its own v86 fork as a nested submodule. Keep BottleShip itself
 // pinned, but replace only that nested checkout with Matthew's WinWeb-owned fork.
-// The exact commit remains locked, so builds are reproducible and BottleShip-specific
-// hypercall/JIT changes cannot accidentally drift to normal v86 master.
+// This handles both checkout modes used by CI: Pages starts with the nested submodule
+// absent, while the upstream-proof job checks it out recursively first.
 run('git', ['-C', bottleShip, 'submodule', 'sync', '--', 'vendor/v86']);
 run('git', ['-C', bottleShip, 'config', 'submodule.vendor/v86.url', spec.repo]);
 run('git', ['-C', bottleShip, 'submodule', 'update', '--init', '--depth', '1', '--', 'vendor/v86']);
+// If recursive checkout already created vendor/v86, its own origin still points at
+// BottleShip's original v86 fork. Retarget the nested repository itself before fetch.
+run('git', ['-C', nested, 'remote', 'set-url', 'origin', spec.repo]);
 
 if (spec.branch) {
   run('git', ['-C', nested, 'fetch', 'origin', `refs/heads/${spec.branch}:refs/remotes/origin/${spec.branch}`, '--depth', '1']);
@@ -57,6 +60,8 @@ run('git', ['-C', nested, 'checkout', '--detach', spec.ref]);
 
 const actual = capture('git', ['-C', nested, 'rev-parse', 'HEAD']);
 if (actual !== spec.ref) throw new Error(`v86 checkout mismatch: expected ${spec.ref}, got ${actual}`);
+const origin = capture('git', ['-C', nested, 'remote', 'get-url', 'origin']);
+if (!origin.includes('matthewcodergamer/v86')) throw new Error(`v86 origin mismatch: ${origin}`);
 
 for (const required of [
   'build/libv86.mjs',
