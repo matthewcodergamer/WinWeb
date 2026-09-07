@@ -11,6 +11,9 @@ on:
       - 'scripts/build-bottleship.mjs'
       - 'scripts/build-hle-engine.mjs'
       - 'scripts/copy-bottleship-runtime-assets.mjs'
+      - 'scripts/copy-v86-vm-assets.mjs'
+      - 'scripts/prepare-winweb-v86.mjs'
+      - 'upstreams.lock.json'
       - '.github/workflows/hle-upstream.yml'
   workflow_dispatch:
 
@@ -30,12 +33,20 @@ jobs:
         run: node scripts/build-bottleship.mjs
       - name: Install WinWeb build dependencies
         run: npm install
+      - name: Prepare WinWeb-owned v86 core
+        run: npm run engine:v86:prepare
       - name: Compile worker-only WinWeb HLE engine bundle
         run: npm run engine:hle:bundle
+      - name: Verify custom v86 pin and runtime bridge
+        run: |
+          test "$(git -C vendor/bottleship/vendor/v86 rev-parse HEAD)" = "27c2d676ff023ab87316b6184205e3087bdc272d"
+          grep -q "WinWeb v86 startup failed" dist/engines/bottleship/emulator-worker.js
+          grep -q "createWinWebWasmLoader" dist/engines/v86-vm/winweb-v86.mjs
       - name: Record upstream proof
         run: |
           printf '%s\n' \
             'BottleShip revision: a7c8543d75569d48890d48744897a0ffe3fb02f7' \
+            'WinWeb v86 revision: 27c2d676ff023ab87316b6184205e3087bdc272d' \
             "Built at: $(date -u +%FT%TZ)" \
             "Upstream dist files: $(find vendor/bottleship/dist -type f | wc -l)" \
             "WinWeb engine files: $(find dist/engines/bottleship -type f | wc -l)" \
@@ -46,4 +57,5 @@ jobs:
           path: |
             hle-upstream-proof.txt
             dist/engines/bottleship
+            dist/engines/v86-vm
             vendor/bottleship/dist
